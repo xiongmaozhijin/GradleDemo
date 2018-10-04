@@ -1,0 +1,87 @@
+apply plugin: 'com.android.application' //加载android 应用插件
+
+android {   //dsl android 配置部分
+
+    compileSdkVersion 25            //这两行必须要有
+    buildToolsVersion "26.0.2"      //这两行必须要有
+
+    defaultConfig {
+        applicationId "com.bbg.gradledemo"
+        minSdkVersion 16
+        targetSdkVersion 25
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        manifestPlaceholders = ["KEY_TYPE": "KEY-default"]
+        buildConfigField("String", "var1", "\"var-default\"")
+    }
+
+
+    signingConfigs {
+        config {
+            keyAlias 'key0'
+            keyPassword '123456'
+            storeFile file("$rootProject.rootDir/keystore.jks")
+            storePassword '123456'
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            debuggable true
+            shrinkResources true
+            zipAlignEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
+            applicationIdSuffix ".release"
+        }
+        debug {
+            minifyEnabled true
+            debuggable true
+            shrinkResources true
+            zipAlignEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
+            applicationIdSuffix ".debug"
+        }
+    }
+
+    flavorDimensions "channel", "mode"
+
+    productFlavors {
+        channel {
+            dimension "channel"
+            manifestPlaceholders = ["KEY_TYPE": "KEY-channel"]
+            buildConfigField("String", "var1", "\"var-channel\"")
+        }
+        channe2 {
+            dimension "channel"
+            manifestPlaceholders = ["KEY_TYPE": "KEY-channe2"]
+            buildConfigField("String", "var1", "\"var-channe2\"")
+        }
+
+        free {
+            dimension "mode"
+            buildConfigField("String", "mode", "\"mode-free\"")
+        }
+
+        pay {
+            dimension "mode"
+            buildConfigField("String", "mode", "\"mode-pay\"")
+        }
+    }
+
+}
+
+dependencies {
+    //依赖
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    testCompile 'junit:junit:4.12'
+}
